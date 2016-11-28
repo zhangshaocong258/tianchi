@@ -19,6 +19,8 @@ import java.util.regex.Pattern;
  * @version 2016/9/3
  *
  * html内容提取特征
+ * 域名（主域名）：zhihu.com 主机名1：zhuanlan.zhihu.com 主机名2：dudu.zhihu.com
+ * 判断是同一个域名，失败，需要建一个字典
  */
 public class ContentFilter {
     HtmlParser htmlParser;
@@ -75,7 +77,8 @@ public class ContentFilter {
      * 获取页面身份
      *
      * @return
-     * 先提取绝对地址，得到除了绝对地址的所有链接个数，然后减去空链接，加上绝对地址个数
+     * 先提取绝对地址，得到除了绝对地址的所有链接个数（若是Jsoup.parse(html)只有一个参数，则相对路径会显示为""，
+     * 若两个参数，则相对路径会转换为绝对路径），然后减去空链接，加上绝对地址个数
      */
     public double getFrequentHost() {
         int count = 0;
@@ -442,7 +445,7 @@ public class ContentFilter {
 //
 //
     public static void main(String args[]) throws Exception {
-        File file = new File("src/main/java/isFish/www.13335926308.com.html");//地址路径，相对是src同级路径
+        File file = new File("zhihu.html");//地址路径，相对是src同级路径
         InputStreamReader reader = null;
         StringWriter writer = new StringWriter();
         try {
@@ -466,16 +469,16 @@ public class ContentFilter {
         //返回转换结果
         if (writer != null) {
             String html = writer.toString();
-            String url = "http://www.13335926308.com";
-            HtmlParser htmlParser = new HtmlParser("http://www.13335926308.com", html);
+            String url = "https://www.zhihu.com";
+            HtmlParser htmlParser = new HtmlParser("https://www.zhihu.com", html);
             ContentFilter filter = new ContentFilter(htmlParser, url);
 
 //            System.out.println("key: " + filter.getInputKeyNum());
 //            System.out.println("num: " + filter.getInputNum());
-            System.out.println("null: " + filter.getNullLinkCount());
+//            System.out.println("null: " + filter.getNullLinkCount());
             System.out.println("freq: " + filter.getFrequentHost());
-            System.out.println("input: " + filter.getInputNum());
-            System.out.println("a: " + filter.getIfBadActionExist());
+//            System.out.println("input: " + filter.getInputNum());
+//            System.out.println("a: " + filter.getIfBadActionExist());
         }
     }
 
